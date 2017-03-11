@@ -1,74 +1,29 @@
 class NumbersController < ApplicationController
-  before_action :set_number, only: [:show, :edit, :update, :destroy]
+
+  MAX_OFFSET = HUNDRED_BILLION = 100000000000
+  MAX_LIMIT = 200
 
   # GET /numbers
-  # GET /numbers.json
   def index
-    @numbers = Numbers.all
+    offset = params[:offset] ? params[:offset].to_i : 1
+    limit = params[:limit] ? params[:limit].to_i : 100
+    @numbers = Numbers.all(offset, offset + limit)
+
+    render json: {
+      "links": {
+        "current": request.original_url
+      },
+      "data": @numbers
+    }, status: 200
   end
 
   # GET /numbers/1
-  # GET /numbers/1.json
   def show
+    render json: {
+      "links": {
+        "current": request.original_url
+      },
+      "data": Numbers.one(params[:id].to_i)
+    }, status: 200
   end
-
-  # GET /numbers/new
-  def new
-    @number = Numbers.new
-  end
-
-  # GET /numbers/1/edit
-  def edit
-  end
-
-  # POST /numbers
-  # POST /numbers.json
-  def create
-    @number = Numbers.new(number_params)
-
-    respond_to do |format|
-      if @number.save
-        format.html { redirect_to @number, notice: 'Numbers was successfully created.' }
-        format.json { render :show, status: :created, location: @number }
-      else
-        format.html { render :new }
-        format.json { render json: @number.errors, status: :unprocessable_entity }
-      end
-    end
-  end
-
-  # PATCH/PUT /numbers/1
-  # PATCH/PUT /numbers/1.json
-  def update
-    respond_to do |format|
-      if @number.update(number_params)
-        format.html { redirect_to @number, notice: 'Numbers was successfully updated.' }
-        format.json { render :show, status: :ok, location: @number }
-      else
-        format.html { render :edit }
-        format.json { render json: @number.errors, status: :unprocessable_entity }
-      end
-    end
-  end
-
-  # DELETE /numbers/1
-  # DELETE /numbers/1.json
-  def destroy
-    @number.destroy
-    respond_to do |format|
-      format.html { redirect_to numbers_index_url, notice: 'Numbers was successfully destroyed.' }
-      format.json { head :no_content }
-    end
-  end
-
-  private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_number
-      @number = Numbers.find(params[:id])
-    end
-
-    # Never trust parameters from the scary internet, only allow the white list through.
-    def number_params
-      params.fetch(:number, {})
-    end
 end
