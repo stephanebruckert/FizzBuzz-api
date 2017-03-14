@@ -1,4 +1,4 @@
-class NumbersController < ApplicationController
+class API::NumbersController < ApplicationController
 
   MAX_OFFSET = HUNDRED_BILLION = 100000000000
   MAX_LIMIT = 200
