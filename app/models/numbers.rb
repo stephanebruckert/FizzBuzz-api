@@ -1,15 +1,13 @@
 class Numbers
-  attr_reader :numb
+  include ActiveModel::SerializerSupport
+  attr_accessor :id, :value
 
   def self.all(min, max)
     (min..max).map { |n| new(n) }
   end
 
-  def self.one(number)
-    new(number)
-  end
-
   def initialize(number)
+    @id = number
     @value = ''
     @value += 'Fizz' if number % 3 == 0
     @value += 'Buzz' if number % 5 == 0

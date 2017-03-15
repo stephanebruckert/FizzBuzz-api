@@ -18,24 +18,16 @@ require 'rails_helper'
 # Message expectations are only used when there is no simpler way to specify
 # that an instance is receiving a specific message.
 
-RSpec.describe NumbersController, type: :controller do
+RSpec.describe API::NumbersController, type: :controller do
 
   describe "GET #index" do
     it "get all first 100 numbers" do
       get :index
       expect(response.status).to eq(200)
-      expect(response.body).to include('data', 'links')
+      expect(response.body).to include('numbers')
       expect(response.header['Content-Type']).to include 'application/json'
-      expect(JSON.parse(response.body)['data']).to have(101).items
+      expect(JSON.parse(response.body)['numbers']).to have(100).items
     end
   end
 
-  describe "GET #show" do
-    it "get only one number" do
-      get :show, params: { id: 1 }
-      expect(response.body).to include('data', 'links')
-      expect(response.header['Content-Type']).to include 'application/json'
-      expect(JSON.parse(response.body)['data']).to have(1).items
-    end
-  end
 end
