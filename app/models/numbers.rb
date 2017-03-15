@@ -13,4 +13,5 @@ class Numbers
     @value += 'Buzz' if number % 5 == 0
     @value = @value.empty? ? number : @value
   end
+
 end

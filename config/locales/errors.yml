@@ -1,0 +1,17 @@
+en:
+  error_messages:
+
+    limit_exceeded:
+      code: 01
+      title: "Limit exceeded"
+      detail: "The limit of items per page can't be more than 200."
+
+    offset_exceeded:
+      code: 02
+      title: "Offset exceeded"
+      detail: "The offset can't be more than 100 billion (100000000000)."
+
+    boundaries_exceeded:
+      code: 03
+      title: "Boundaries exceeded"
+      detail: "This offset with this limit would exceed 100 billion."

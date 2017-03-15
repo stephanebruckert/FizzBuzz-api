@@ -21,12 +21,64 @@ require 'rails_helper'
 RSpec.describe API::NumbersController, type: :controller do
 
   describe "GET #index" do
-    it "get all first 100 numbers" do
+    it "gets a JSON response when successful" do
+      get :index
+      expect(response.status).to eq(200)
+      expect(response.header['Content-Type']).to include 'application/json'
+    end
+
+    it "gets a JSON response when failure" do
+      get :index, params: { limit: 201 }
+      expect(JSON.parse(response.body)['error']['status']).to eq(400)
+      expect(response.header['Content-Type']).to include 'application/json'
+    end
+
+    it "gets all first 100 numbers by default" do
       get :index
       expect(response.status).to eq(200)
       expect(response.body).to include('numbers')
-      expect(response.header['Content-Type']).to include 'application/json'
       expect(JSON.parse(response.body)['numbers']).to have(100).items
+    end
+
+    it "gets all first 100 numbers using query parameters" do
+      get :index, params: { offset: 1, limit: 100 }
+      expect(response.status).to eq(200)
+      expect(response.body).to include('numbers')
+      expect(JSON.parse(response.body)['numbers']).to have(100).items
+    end
+
+    it "gets 200 items from 1000 as requested" do
+      get :index, params: { offset: 1000, limit: 200 }
+      expect(JSON.parse(response.body)['numbers']).to have(200).items
+      expect(JSON.parse(response.body)['numbers']).to include(
+        {"id" => 1000, "value" => "Buzz"},
+        {"id" => 1199, "value" => 1199})
+    end
+
+    it "gets up to 200 items at once" do
+      get :index, params: { limit: 200 }
+      expect(JSON.parse(response.body)['numbers']).to have(200).items
+    end
+
+    it "gets an error when asking more than 200 items at once" do
+      get :index, params: { limit: 201 }
+      expect(response.body).not_to include('numbers')
+      expect(JSON.parse(response.body)['error']['status']).to eq(400)
+      expect(JSON.parse(response.body)['error']['title']).to eq("Limit exceeded")
+    end
+
+    it "gets an error when trying to get more than a hundred billion items" do
+      get :index, params: { offset: 100000000001 }
+      expect(response.body).not_to include('numbers')
+      expect(JSON.parse(response.body)['error']['status']).to eq(400)
+      expect(JSON.parse(response.body)['error']['title']).to eq("Offset exceeded")
+    end
+
+    it "gets an error when the limit and offset exceed 100 billions" do
+      get :index, params: { offset: 99999999950, limit: 100 }
+      expect(response.body).not_to include('numbers')
+      expect(JSON.parse(response.body)['error']['status']).to eq(400)
+      expect(JSON.parse(response.body)['error']['title']).to eq("Boundaries exceeded")
     end
   end
 
