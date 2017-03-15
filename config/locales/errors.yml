@@ -15,3 +15,8 @@ en:
       code: 03
       title: "Boundaries exceeded"
       detail: "This offset with this limit would exceed 100 billion."
+
+    not_integer:
+      code: 04
+      title: "Badly formatted query parameters"
+      detail: "One of limit or offset is not a valid integer."

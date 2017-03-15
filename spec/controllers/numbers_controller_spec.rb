@@ -80,6 +80,20 @@ RSpec.describe API::NumbersController, type: :controller do
       expect(JSON.parse(response.body)['error']['status']).to eq(400)
       expect(JSON.parse(response.body)['error']['title']).to eq("Boundaries exceeded")
     end
+
+    it "gets an error when one parameter is a string" do
+      get :index, params: { offset: 'a-string' }
+      expect(response.body).not_to include('numbers')
+      expect(JSON.parse(response.body)['error']['status']).to eq(400)
+      expect(JSON.parse(response.body)['error']['title']).to eq("Badly formatted query parameters")
+    end
+
+    it "gets an error when one parameter is a float" do
+      get :index, params: { limit: 'a-string' }
+      expect(response.body).not_to include('numbers')
+      expect(JSON.parse(response.body)['error']['status']).to eq(400)
+      expect(JSON.parse(response.body)['error']['title']).to eq("Badly formatted query parameters")
+    end
   end
 
 end

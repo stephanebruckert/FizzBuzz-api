@@ -11,6 +11,9 @@ module NumbersHelper
 
   def validate_offset(offset)
     if offset
+      if !(Integer(offset) rescue false)
+        raise Exception, :not_integer
+      end
       if (MIN_OFFSET..MAX_OFFSET).exclude? offset.to_i
         raise Exception, :offset_exceeded
       end
@@ -22,6 +25,9 @@ module NumbersHelper
 
   def validate_limit(limit)
     if limit
+      if !(Integer(limit) rescue false)
+        raise Exception, :not_integer
+      end
       if (MIN_LIMIT..MAX_LIMIT).exclude? limit.to_i
         raise Exception, :limit_exceeded
       end
